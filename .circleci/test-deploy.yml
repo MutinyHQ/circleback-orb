@@ -34,14 +34,14 @@ jobs:
       # Run your orb's commands to validate them.
       - circleback/trigger:
           branch: << pipeline.git.branch >>
-          project: github/justindalton/circleback-orb
+          project: github/MutinyHQ/circleback-orb
           parameters: '{ "test": "wait" }'
       - circleback/check_status:
-          project: github/justindalton/circleback-orb
+          project: github/MutinyHQ/circleback-orb
           poll_interval: 1
       - circleback/trigger:
           branch: << pipeline.git.branch >>
-          project: github/justindalton/circleback-orb
+          project: github/MutinyHQ/circleback-orb
           parameters: '{ "test": "approve" }'
           include_workflow_id: true
           workflow_id_key: test_workflow_id
@@ -62,7 +62,7 @@ workflows:
       - orb-tools/pack:
           filters: *release-filters
       - orb-tools/publish:
-          orb_name: justindalton/circleback
+          orb_name: mutinyhq/circleback
           vcs_type: << pipeline.project.type >>
           pub_type: production
           # Ensure this job requires all test jobs and the pack job.
