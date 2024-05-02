@@ -21,12 +21,12 @@ workflows:
     jobs:
       - circleback/approve:
           name: pipeline-approval-test-job
-          project: github/MutinyHQ/circleback-orb
+          project: github/${ORB_GITHUB_ORG}/circleback-orb
           pipeline_id: << pipeline.id >>
           approval_job: pipeline-approval-test
       - circleback/approve:
           name: workflow-approval-test-job
-          project: github/MutinyHQ/circleback-orb
+          project: github/${ORB_GITHUB_ORG}/circleback-orb
           workflow_id: << pipeline.parameters.test_workflow_id >>
           approval_job: workflow-approval-test
       - pipeline-approval-test:
