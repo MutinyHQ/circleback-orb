@@ -18,7 +18,7 @@ fi
 CIRCLE_TOKEN="${!PARAM_CIRCLECI_API_KEY}"
 
 if [ -z "${PARAM_WORKFLOW_ID}" ]; then
-  echo "Fetching workflow ID from pipeline ID: $PARAM_PIPELINE_ID"
+  echo "Fetching workflow from pipeline ID: $PARAM_PIPELINE_ID"
   WORKFLOW_API_RESPONSE=$(
     curl --request GET \
       --url "https://circleci.com/api/v2/pipeline/$PARAM_PIPELINE_ID/workflow" \
@@ -26,7 +26,18 @@ if [ -z "${PARAM_WORKFLOW_ID}" ]; then
       --header "content-type: application/json"
   )
 
-  PARAM_WORKFLOW_ID=$(echo "$WORKFLOW_API_RESPONSE" | jq -r ".items[0].id")
+  if [[ $PARAM_WORKFLOW_NAME ]]
+  then
+    PARAM_WORKFLOW_ID=$(echo "${WORKFLOW_API_RESPONSE}" | \
+                          jq -r --arg workflow_name "${PARAM_WORKFLOW_NAME}" '.items[] | select(.name == $workflow_name) | .id')
+  elif [[ $PARAM_PIPELINE_ID == "${CIRCLE_PIPELINE_ID}" ]]
+  then
+    # Since we've specified our own pipeline, let's assume it's our own workflow
+    PARAM_WORKFLOW_ID="${CIRCLE_WORKFLOW_ID}"
+  else
+    echo "Choosing first workflow for pipeline ${PARAM_WORKFLOW_ID}"
+    PARAM_WORKFLOW_ID=$(echo "$WORKFLOW_API_RESPONSE" | jq -r ".items[0].id")
+  fi
 fi
 
 echo "Workflow ID: $PARAM_WORKFLOW_ID"

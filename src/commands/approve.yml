@@ -1,5 +1,5 @@
 description: >
-  This command triggers a pipeline in a separate project via the CircleCI API.
+  This command triggers a pipeline in a (potentially) separate project via the CircleCI API.
 
 parameters:
   circleci_api_key:
@@ -8,15 +8,19 @@ parameters:
     description: "The name of the environment variable that contains the CircleCI API key."
   project:
     type: string
-    description: "The name of the project with the approval job."
+    description: "The name of the project with the approval job (not used)."
   pipeline_id:
     type: string
     default: ""
-    description: "The pipeline ID for the approval job."
+    description: "The pipeline ID for the approval job (required)."
   workflow_id:
     type: string
     default: ""
-    description: "The workflow ID for the approval job."
+    description: "The workflow ID for the approval job (supersedes workflow_name)."
+  workflow_name:
+    type: string
+    default: ""
+    description: "The workflow name for the approval job."
   approval_job:
     type: string
     description: "The name of the approval job."
@@ -27,6 +31,7 @@ steps:
         PARAM_PROJECT: <<parameters.project>>
         PARAM_PIPELINE_ID: <<parameters.pipeline_id>>
         PARAM_WORKFLOW_ID: <<parameters.workflow_id>>
+        PARAM_WORKFLOW_NAME: <<parameters.workflow_name>>
         PARAM_APPROVAL_JOB: <<parameters.approval_job>>
       name: Approve Job
       command: <<include(scripts/approve.sh)>>
